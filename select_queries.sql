@@ -97,7 +97,4 @@ HAVING COUNT(t.track_id) = (
     FROM (SELECT COUNT(track_id) AS track_count FROM Track GROUP BY album_id) AS counts
 );
 
-SELECT name
-FROM Artist
-WHERE name NOT LIKE '% %'
-ORDER BY name;
+
