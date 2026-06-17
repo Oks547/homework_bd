@@ -1,3 +1,5 @@
+-- ========== ЗАДАНИЕ 2 ==========
+
 -- 2.1. Название и продолжительность самого длительного трека
 SELECT title, duration
 FROM Track
@@ -21,7 +23,9 @@ WHERE name NOT LIKE '% %';
 -- 2.5. Название треков, которые содержат слово «мой» или «my»
 SELECT title
 FROM Track
-WHERE LOWER(title) LIKE '%мой%' OR LOWER(title) LIKE '%my%';
+WHERE 
+	title ILIKE 'мой' OR title ILIKE 'мой %' OR title ILIKE '% мой %' 
+	OR title ILIKE	'my' OR title ILIKE	'my %' OR title ILIKE	'% my %';
 
 -- ========== ЗАДАНИЕ 3 ==========
 
@@ -69,9 +73,12 @@ WHERE ar.name = 'Кино';
 SELECT DISTINCT a.title AS альбом
 FROM Album a
 JOIN Artist_Album aa ON a.album_id = aa.album_id
-JOIN Artist_Genre ag ON aa.artist_id = ag.artist_id
-GROUP BY a.album_id, a.title
-HAVING COUNT(DISTINCT ag.genre_id) > 1;
+JOIN (
+	SELECT artist_id
+	FROM Artist_Genre 
+	GROUP BY artist_id
+	HAVING COUNT(genre_id) > 1
+) multi_genre_artists ON aa.artist_id = multi_genre_artists.artist_id;
 
 -- 4.2. Треки, которые не входят в сборники
 SELECT t.title AS трек
@@ -97,7 +104,4 @@ HAVING COUNT(t.track_id) = (
     FROM (SELECT COUNT(track_id) AS track_count FROM Track GROUP BY album_id) AS counts
 );
 
-SELECT name
-FROM Artist
-WHERE name NOT LIKE '% %'
-ORDER BY name;
+
